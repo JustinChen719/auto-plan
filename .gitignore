@@ -1,3 +1,6 @@
+.idea
+__pycache__
+
 aliyun-demo.py
 test.ipynb
 
