@@ -1,7 +1,6 @@
 .idea
 __pycache__
 
-aliyun-demo.py
+workspace/*
 test.ipynb
-
 .env

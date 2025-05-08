@@ -14,7 +14,11 @@ class BaseAgent(ABC):
         self.next_step_prompt = NEXT_STEP_PROMPTS.get(self.name)
 
         self.current_query: None | str = None
+        self.current_prompt = ""
+        self.current_results: None | list[str] = None
         self.memory = Memory()
+        if self.system_prompt:
+            self.memory.add_system_message(self.system_prompt)
         self.llm: None | LLM = None
 
         self.current_step: int = 0
@@ -22,11 +26,36 @@ class BaseAgent(ABC):
         self.finished: bool = False
         self.failed: bool = False
 
+    @classmethod
+    def get_tool_call_like_params(cls) -> dict:
+        """ 获取工具调用类似格式的agent参数 """
+        return {
+            "type": "function",
+            "function": {
+                "name": cls.name,
+                "description": cls.description,
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "task": {
+                            "type": "string",
+                            "description": "需要完成的任务",
+                        }
+                    },
+                    "required": ["task"]
+                }
+            },
+        }
+
     @abstractmethod
     def reset(self) -> None:
         """
         重置状态
         """
+        pass
+
+    @abstractmethod
+    def create_next_step_prompt(self) -> None:
         pass
 
     @abstractmethod

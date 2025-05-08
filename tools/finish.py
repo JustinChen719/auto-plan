@@ -25,6 +25,4 @@ class FinishTool(BaseTool):
         return True
 
     async def execute(self, params: dict) -> str | None:
-        if self.check_params(params):
-            return params["result"]
-        return None
+        return params["result"]

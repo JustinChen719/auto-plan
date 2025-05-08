@@ -13,6 +13,7 @@ logger = get_logger(__name__)
 
 class LLMName(Enum):
     QWEN3_32B = "qwen3-32b"
+    QWEN3_235B_A22B = "qwen3-235b-a22b"
 
 
 class LLMToolCall(BaseModel):
@@ -61,6 +62,8 @@ class LLM:
             self,
             memory: Memory,
             tools=None,
+            tool_choice: str | dict = "auto",
+            enable_thinking: bool = True,
             display_reasoning_content: bool = False,
             display_content: bool = False
     ) -> LLMResponseContent:
@@ -74,14 +77,13 @@ class LLM:
                 model=self.model_name.value,
                 messages=messages,
                 tools=tools,
-                tool_choice="auto",
+                tool_choice=tool_choice,
+                extra_body={"enable_thinking": enable_thinking},
                 parallel_tool_calls=True,
                 stream=True
         )
 
         # 解析结果
-        if not display_reasoning_content and not display_content:
-            logger.info("🌐 模型正在思考中...")
         response_content = LLMResponseContent()
         tool_calls: dict[int, dict] = defaultdict(dict)  # 临时存储
         if isinstance(response, Stream):
@@ -105,10 +107,7 @@ class LLM:
                     response_content.reasoning_content += delta.reasoning_content
                     if display_reasoning_content:
                         print(delta.reasoning_content, flush=True, end="")
-
-            if not display_reasoning_content and not display_content:
-                logger.info("👌 模型思考完毕！")
-            else:
+            if display_reasoning_content or display_content:
                 print("\n")
 
             # json解析

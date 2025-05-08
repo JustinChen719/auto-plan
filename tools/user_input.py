@@ -28,8 +28,6 @@ class UserInputTool(BaseTool):
         return True
 
     async def execute(self, params: dict) -> str | None:
-        if self.check_params(params):
-            logger.info(f"💬 UserInputTool: {params['question']}")
-            user_input = input()
-            return user_input
-        return None
+        logger.info(f"💬 {self.name}: {params['question']}")
+        user_input = input()
+        return user_input
