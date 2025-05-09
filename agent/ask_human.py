@@ -1,5 +1,5 @@
 from agent.react import ReActAgent
-from tools import get_tool_mapper, UserInputTool, FinishTool
+from tools import UserInputTool, FinishTool
 from utils import get_logger
 
 logger = get_logger(__name__)
@@ -23,20 +23,4 @@ class AskHumanAgent(ReActAgent):
 
     async def run(self, query) -> str | None:
         logger.info(f"❔️ {self.name} 正在向用户提问：{query}")
-        self.reset()
-        self.current_query = query
-        self.current_step = 1
-        while not self.finished and not self.failed and self.current_step <= self.max_step:
-            self.create_next_step_prompt()
-            await self.step()
-            self.current_step += 1
-
-        if self.current_step > self.max_step:
-            logger.info(f"🔴 {self.name} 运行超时！")
-            return None
-        if self.failed:
-            logger.info(f"🔴 {self.name} 运行出现错误！")
-            return None
-        if self.finished:
-            logger.info(f"🟢 {self.name} 运行完成，结果为：{self.result}")
-            return self.result
+        await super().run(query)

@@ -10,7 +10,7 @@ logger = get_logger(__name__)
 
 class ReActAgent(BaseAgent, ABC):
     """
-    Reasoning Action Agent
+    Reasoning-Action-Agent
     """
 
     def __init__(self):
@@ -92,6 +92,8 @@ class ReActAgent(BaseAgent, ABC):
             raise ValueError(f"没有 {tool_call_name} 这个工具！")
 
     async def step(self) -> LLMResponseContent:
+        self.current_step += 1
+
         # 思考
         response: LLMResponseContent = await self.think()
 
@@ -103,3 +105,20 @@ class ReActAgent(BaseAgent, ABC):
                     tool_call_params=tool_call.arguments
             )
         return response
+
+    async def run(self, query) -> str | None:
+        self.reset()
+        self.current_query = query
+        while not self.finished and not self.failed and self.current_step < self.max_step:
+            self.create_next_step_prompt()
+            await self.step()
+
+        if self.current_step > self.max_step:
+            logger.info(f"🔴 {self.name} 运行超时！")
+            return None
+        if self.failed:
+            logger.info(f"🔴 {self.name} 运行出现错误！")
+            return None
+        if self.finished:
+            logger.info(f"🟢 {self.name} 运行完成，结果为：{self.result}")
+            return self.result
