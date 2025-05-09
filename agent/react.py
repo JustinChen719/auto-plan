@@ -21,7 +21,7 @@ class ReActAgent(BaseAgent, ABC):
         # 结果
         self.result: None | str = None
 
-        self.llm = LLM(LLMName.QWEN3_32B)
+        self.llm = LLM(LLMName.QWEN_TURBO)
 
     def reset(self) -> None:
         self.current_query = None

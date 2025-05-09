@@ -23,4 +23,4 @@ class AskHumanAgent(ReActAgent):
 
     async def run(self, query) -> str | None:
         logger.info(f"❔️ {self.name} 正在向用户提问：{query}")
-        await super().run(query)
+        return await super().run(query)

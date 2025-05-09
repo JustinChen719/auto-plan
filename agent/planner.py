@@ -17,7 +17,7 @@ class PlannerAgent(BaseAgent):
         # 功能性智能体映射集
         self.agent_mapper: dict[str, ReActAgent] = agent_mapper
 
-        self.llm = LLM(LLMName.QWEN3_235B_A22B)
+        self.llm = LLM(LLMName.QWEN3_32B)
 
     def reset(self) -> None:
         self.current_query = None

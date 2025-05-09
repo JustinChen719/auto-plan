@@ -12,6 +12,8 @@ logger = get_logger(__name__)
 
 
 class LLMName(Enum):
+    QWEN_TURBO = "qwen-turbo"
+    QWEN_PLUS = "qwen-plus"
     QWEN3_32B = "qwen3-32b"
     QWEN3_235B_A22B = "qwen3-235b-a22b"
 
@@ -114,12 +116,16 @@ class LLM:
             tool_calls_list = [(index, value) for index, value in tool_calls.items()]
             tool_calls_list.sort(key=lambda x: x[0])
             for tool_call in tool_calls_list:
-                response_content.tool_calls.append(
-                        LLMToolCall(
-                                id=tool_call[1]["id"],
-                                name=tool_call[1]["name"],
-                                arguments=json.loads(tool_call[1]["arguments"]),
-                        )
-                )
+                try:
+                    response_content.tool_calls.append(
+                            LLMToolCall(
+                                    id=tool_call[1]["id"],
+                                    name=tool_call[1]["name"],
+                                    arguments=json.loads(tool_call[1]["arguments"]),
+                            )
+                    )
+                except Exception as e:
+                    logger.error(e)
+                    logger.error(tool_call[1])
 
         return response_content

@@ -13,7 +13,7 @@ class SummaryAgent(BaseAgent):
     def __init__(self):
         super().__init__()
 
-        self.llm = LLM(LLMName.QWEN3_235B_A22B)
+        self.llm = LLM(LLMName.QWEN_TURBO)
 
     def reset(self) -> None:
         self.current_query = None

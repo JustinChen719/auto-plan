@@ -24,4 +24,4 @@ class ToolCallAgent(ReActAgent):
 
     async def run(self, query) -> str | None:
         logger.info(f"🧰 {self.name} 开始使用工具来解决问题：{query}")
-        await super().run(query)
+        return await super().run(query)

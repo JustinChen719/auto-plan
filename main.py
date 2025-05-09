@@ -17,20 +17,21 @@ def init():
 # 帮我查看明天苏州的天气
 # 帮我挑一件日常男士服装
 # 帮我计算一个数学题
+# 帮我计算99*8和66*9的结果，然后还要计算这两个结果之和
 
 
 async def main():
     # 主循环
     while True:
         try:
-            # 用户
             logger.info("🤖 请输入问题，让智能体帮你解决吧：")
             query = input()
             if not query.strip():
+                logger.info("未输入内容，结束对话")
                 break
 
+            # 开始执行
             await scheduler.run(query)
-            await asyncio.sleep(1)
 
         except KeyboardInterrupt as e:
             logger.error("退出")
